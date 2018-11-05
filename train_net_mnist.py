@@ -55,9 +55,14 @@ def test(args, model, device, test_loader):
         test_loss, correct, len(test_loader.dataset),
         100. * correct / len(test_loader.dataset)))
 
+
+def save_checkpoint(model, filename='checkpoint.pth'):
+    torch.save(model, filename)
+
+
 def main():
     # Training settings
-    parser = argparse.ArgumentParser(description='PyTorch MNIST Example')
+    parser = argparse.ArgumentParser(description='MNIST Example')
     parser.add_argument('--batch-size', type=int, default=64, metavar='N',
                         help='input batch size for training (default: 64)')
     parser.add_argument('--test-batch-size', type=int, default=1000, metavar='N',
@@ -103,7 +108,9 @@ def main():
     for epoch in range(1, args.epochs + 1):
         train(args, model, device, train_loader, optimizer, epoch)
         test(args, model, device, test_loader)
-
+        save_checkpoint({'epoch' : epoch+1,
+                         'state_dict': model.state_dict(),
+                         'optimizer': optimizer.state_dict()})
 
 if __name__ == '__main__':
     main()
